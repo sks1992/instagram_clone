@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/util/colors.dart';
+import 'package:instagram_clone/util/helpers.dart';
 import 'package:instagram_clone/widgets/reusable_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -16,6 +19,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
+  Uint8List? _img;
+  bool isLogin = false;
 
   @override
   void dispose() {
@@ -24,6 +29,35 @@ class _SignupScreenState extends State<SignupScreen> {
     _bioController.dispose();
     _userNameController.dispose();
     super.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List image = await pickImage(ImageSource.gallery);
+    setState(() {
+      _img = image;
+    });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      isLogin = true;
+    });
+    String res = await AuthMethods().signupUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      userName: _userNameController.text,
+      bio: _bioController.text,
+      file: _img!,
+    );
+    print("SignUpScreen:: Signup Result:: $res");
+    if (res == "success") {
+      showSnackBar(res, context, true);
+    } else {
+      showSnackBar(res, context, false);
+    }
+    setState(() {
+      isLogin = false;
+    });
   }
 
   @override
@@ -47,16 +81,23 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 40),
                 Stack(
                   children: [
-                    const CircleAvatar(
-                      radius: 64,
-                      backgroundImage: NetworkImage(
-                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"),
-                    ),
+                    _img != null
+                        ? CircleAvatar(
+                            radius: 64,
+                            backgroundImage: MemoryImage(_img!),
+                          )
+                        : const CircleAvatar(
+                            radius: 64,
+                            backgroundImage: NetworkImage(
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8agLYh5KqNIxsU5B0J5d601gO8ubgENaacYEnP6i52Q&s"),
+                          ),
                     Positioned(
                       bottom: -10,
                       right: -10,
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          selectImage();
+                        },
                         icon: const Icon(Icons.camera_alt),
                       ),
                     ),
@@ -96,14 +137,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 //button login
                 InkWell(
-                  onTap: () async {
-                    String res = await AuthMethods().signupUser(
-                      userName: _userNameController.text,
-                      password: _passwordController.text,
-                      email: _emailController.text,
-                      bio: _bioController.text,
-                    );
-                    print("SignUpScreen:: Signup Result:: $res");
+                  onTap: () {
+                    signUpUser();
                   },
                   child: Container(
                     width: double.infinity,
@@ -116,10 +151,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         color: blueColor),
-                    child: const Text("SignUp"),
+                    child: isLogin
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("SignUp"),
                   ),
                 ),
-                //Transition to siging upPage
+                //Transition to signing upPage
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

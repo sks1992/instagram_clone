@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/util/colors.dart';
+import 'package:instagram_clone/util/helpers.dart';
 import 'package:instagram_clone/widgets/reusable_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,12 +15,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLogin = false;
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      isLogin = true;
+    });
+    String res = await AuthMethods().loginUser(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    print("LoginScreen:: login Result:: $res");
+    if (res == "success") {
+      showSnackBar(res, context, true);
+    } else {
+      showSnackBar(res, context, false);
+    }
+    setState(() {
+      isLogin = false;
+    });
   }
 
   @override
@@ -32,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-               const SizedBox(height: 72),
+                const SizedBox(height: 72),
                 //svg image
                 SvgPicture.asset(
                   "assets/ic_instagram.svg",
@@ -58,7 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
                 //button login
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    loginUser();
+                  },
                   child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
@@ -70,7 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         color: blueColor),
-                    child: const Text("Login"),
+                    child: isLogin
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Login"),
                   ),
                 ),
                 //Transition to signing up Page

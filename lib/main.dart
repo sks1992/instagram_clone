@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'Instagram Clone',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: SignupScreen(),
+      home: LoginScreen(),
       // home: const ResponsiveLayout(
       //   webScreenLayout: WebScreenLayout(),
       //   mobileScreenLayout: MobileScreenLayout(),
@@ -41,4 +41,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//1.22.42
+//2.00.00
