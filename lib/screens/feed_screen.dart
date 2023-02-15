@@ -31,13 +31,12 @@ class FeedScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-              itemCount:snapshot.data!.docs.length,
+          return snapshot.data ==null ? const Center(child: CircularProgressIndicator()):ListView.builder(
+              itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
-                return
-                  PostCard(
-                    snap:snapshot.data!.docs[index].data(),
-                  );
+                return PostCard(
+                  snap: snapshot.data!.docs![index].data(),
+                );
               });
         },
       ),
