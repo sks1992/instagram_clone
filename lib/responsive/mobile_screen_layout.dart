@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone/screens/add_post_screen.dart';
+import 'package:instagram_clone/screens/feed_screen.dart';
+import 'package:instagram_clone/screens/profile_screen.dart';
+import 'package:instagram_clone/screens/search_screen.dart';
 import 'package:instagram_clone/util/colors.dart';
-import 'package:instagram_clone/util/global_variables.dart';
 
 class MobileScreenLayout extends StatefulWidget {
   const MobileScreenLayout({Key? key}) : super(key: key);
@@ -20,13 +24,19 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     pageController = PageController();
   }
 
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   void navigationTapped(int page) {
     pageController.jumpToPage(page);
   }
 
   void onPageChanged(int page) {
     setState(() {
-      _page =page;
+      _page = page;
     });
   }
 
@@ -38,7 +48,15 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           controller: pageController,
           onPageChanged: onPageChanged,
           physics: const NeverScrollableScrollPhysics(),
-          children: homeScreenItem,
+          children: [
+            const FeedScreen(),
+            const SearchScreen(),
+            const AddPostScreen(),
+            const Text("Notify"),
+            ProfileScreen(
+              uid: FirebaseAuth.instance.currentUser!.uid,
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: CupertinoTabBar(

@@ -44,8 +44,8 @@ class MyApp extends StatelessWidget {
         ),
         home: StreamBuilder(
           //stream: FirebaseAuth.instance.idTokenChanges(),
-          // stream: FirebaseAuth.instance.userChanges(),
-          stream: FirebaseAuth.instance.authStateChanges(),
+          stream: FirebaseAuth.instance.userChanges(),
+          //stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
               if (snapshot.hasData) {

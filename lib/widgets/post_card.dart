@@ -5,7 +5,7 @@ import 'package:instagram_clone/providers/user_provider.dart';
 import 'package:instagram_clone/resources/firestore_methode.dart';
 import 'package:instagram_clone/screens/comments_screen.dart';
 import 'package:instagram_clone/util/colors.dart';
-import 'package:instagram_clone/util/global_variables.dart';
+import 'package:instagram_clone/util/constants.dart';
 import 'package:instagram_clone/util/helpers.dart';
 import 'package:instagram_clone/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
@@ -189,22 +189,23 @@ class _PostCardState extends State<PostCard> {
                 isAnimating: widget.snap['likes'].contains(user.uid),
                 smallLike: true,
                 child: IconButton(
-                    onPressed: () async {
-                      await FirestoreMethods().likePost(
-                        widget.snap['postId'],
-                        user.uid,
-                        widget.snap['likes'],
-                      );
-                    },
-                    icon: widget.snap['likes'].contains(user.uid)
-                        ? const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          )
-                        : const Icon(
-                            Icons.favorite,
-                            color: Colors.white,
-                          )),
+                  onPressed: () async {
+                    await FirestoreMethods().likePost(
+                      widget.snap['postId'],
+                      user.uid,
+                      widget.snap['likes'],
+                    );
+                  },
+                  icon: widget.snap['likes'].contains(user.uid)
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(
+                          Icons.favorite,
+                          color: Colors.white,
+                        ),
+                ),
               ),
               IconButton(
                 onPressed: () {

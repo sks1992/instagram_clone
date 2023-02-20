@@ -4,7 +4,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:instagram_clone/screens/profile_screen.dart';
 import 'package:instagram_clone/util/colors.dart';
 import 'package:instagram_clone/util/constants.dart';
-import 'package:instagram_clone/util/global_variables.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -31,12 +30,18 @@ class _SearchScreenState extends State<SearchScreen> {
         title: TextFormField(
           controller: searchController,
           decoration: const InputDecoration(
-            labelText: "Search For A User",
+            labelText: "Search For A User ...",
           ),
           onFieldSubmitted: (String _) {
-            setState(() {
-              isShowUser = true;
-            });
+            if (searchController.text.isEmpty) {
+              setState(() {
+                isShowUser = false;
+              });
+            } else {
+              setState(() {
+                isShowUser = true;
+              });
+            }
           },
         ),
       ),
@@ -48,10 +53,20 @@ class _SearchScreenState extends State<SearchScreen> {
                       isGreaterThanOrEqualTo: searchController.text)
                   .get(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: Text(
+                        "No Data Found",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }
                 }
                 return ListView.builder(
                   itemCount: (snapshot.data! as dynamic).docs.length,
@@ -87,12 +102,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   .orderBy('datePublished')
                   .get(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-
                 return StaggeredGridView.countBuilder(
                   crossAxisCount: 3,
                   itemCount: (snapshot.data! as dynamic).docs.length,

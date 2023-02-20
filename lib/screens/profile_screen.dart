@@ -119,13 +119,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             borderColor: Colors.grey,
                                             textColor: primaryColor,
                                             function: () async {
-                                              await AuthMethods().signOut();
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (_) => const LoginScreen(),
-                                                ),
-                                              );
+                                              await AuthMethods()
+                                                  .signOut()
+                                                  .then(
+                                                    (value) =>
+                                                        Navigator.of(context)
+                                                            .pushReplacement(
+                                                      MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            const LoginScreen(),
+                                                      ),
+                                                    ),
+                                                  );
                                             },
                                             text: "Sign Out",
                                           )

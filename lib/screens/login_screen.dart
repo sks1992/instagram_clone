@@ -6,7 +6,7 @@ import 'package:instagram_clone/responsive/responsive_layout_screen.dart';
 import 'package:instagram_clone/responsive/web_screen_layout.dart';
 import 'package:instagram_clone/screens/singnup_screen.dart';
 import 'package:instagram_clone/util/colors.dart';
-import 'package:instagram_clone/util/global_variables.dart';
+import 'package:instagram_clone/util/constants.dart';
 import 'package:instagram_clone/util/helpers.dart';
 import 'package:instagram_clone/widgets/reusable_text_field.dart';
 
@@ -37,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
       email: emailController.text,
       password: passwordController.text,
     );
-    print("LoginScreen:: login Result:: $res");
     if (res == "success") {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -46,7 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
               mobileScreenLayout: MobileScreenLayout()),
         ),
       );
-      showSnackBar(res, context, true);
     } else {
       showSnackBar(res, context, false);
     }
@@ -69,7 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Container(
           padding: MediaQuery.of(context).size.width > webScreenSize
-              ? EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/3)
+              ? EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width / 3)
               : const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
           child: SingleChildScrollView(
